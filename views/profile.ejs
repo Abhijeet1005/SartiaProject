@@ -8,5 +8,76 @@
 </head>
 <body>
     <h1>This is the profile page</h1>
+
+    <!-- Box for displaying logged-in user information -->
+    <div id="user-box" style="border: 1px solid #ccc; padding: 20px; margin-top: 20px;">
+        <h2>Logged in User:</h2>
+        <pre id="user-data"></pre>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Box for displaying all users if the role is Admin -->
+    <div id="admin-users-box" style="border: 1px solid #ccc; padding: 20px; margin-top: 20px; display: none;">
+
+        <h3>Activate or Deactivate a user with email:</h3>
+        <form id="email-form">
+            <label for="user-email">Enter User's Email:</label>
+            <input type="email" id="user-email" name="user-email" required>
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2>All Users:</h2>
+        <pre id="user-list"></pre>
+
+    </div>
+
+    <script>
+        function logout(){
+            axios.post('/api/users/logout')
+            .then(response => {
+                        // Handle successful response
+                        alert('Logout successful');
+                        window.location.href = '/login';
+                    })
+                    .catch(error => {
+                        // Handle error response
+                        alert('There was an error processing the request!');
+                    });
+        }
+        // Get the user string from the server-rendered data
+        const user = `<%= user %>`; // Logged-in user info
+
+        // Get the role and all users data
+        const role = `<%= role %>`;
+        const allUsers = `<%= data %>`; // Data from server (either empty or array of users)
+
+        // Display the logged-in user data
+        document.getElementById('user-data').textContent = user;
+
+        // If the user is Admin, display the list of all users and the form
+        if (role === "Admin") {
+            document.getElementById('admin-users-box').style.display = "block"; // Show the Admin users box
+            document.getElementById('user-list').textContent = allUsers; // Display all users
+
+            // Handle form submission
+            document.getElementById('email-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from reloading the page
+                
+                // Get the email entered by the admin
+                const userEmail = document.getElementById('user-email').value;
+
+                // Send POST request to your backend route
+                axios.post('/api/users/activation-toggle', { email: userEmail })
+                    .then(response => {
+                        // Handle successful response
+                        alert('Toggle successful');
+                    })
+                    .catch(error => {
+                        // Handle error response
+                        alert('There was an error processing the request!');
+                    });
+            });
+        }
+    </script>
 </body>
 </html>

@@ -161,6 +161,36 @@ const getAllUsers = asyncHandler(async (req, res) => {
         )
 })
 
+const renderProfilePage = asyncHandler(async (req, res) => {
+    const loggedInUser = `
+        Name of the user: ${req.user.fullname}
+        Email of the user: ${req.user.email}
+        Profile of the user: ${req.user.profile}
+        Role of the user: ${req.user.role}
+        Active status of the user: ${req.user.isActive}
+    `;
+
+    // If user is Admin, fetch all users and format them
+    if (req.user.role === 'Admin') {
+        const allUsers = await User.find().select("email profile role isActive");
+
+        // Format each user as a string similar to loggedInUser
+        const allUsersFormatted = allUsers.map(user => `
+            Email of the user: ${user.email}
+            Profile of the user: ${user.profile}
+            Role of the user: ${user.role}
+            Active status of the user: ${user.isActive}
+        `);
+
+        // Send the formatted data as a string
+        return res.render('profile', { user: loggedInUser, role: req.user.role, data: allUsersFormatted });
+    }
+
+    // If user is not Admin, render their own profile data
+    return res.render('profile', { user: loggedInUser, role: req.user.role, data: [] });
+});
+
+
 const changeCurrentPassword = asyncHandler(async (req, res) => {
     const { oldPassword, newPassword } = req.body
 
@@ -248,4 +278,4 @@ const userActivationToggle = asyncHandler(async (req, res) => {
 })
 
 
-export { registerUser, loginUser, logoutUser, getCurrentUser, getAllUsers, changeCurrentPassword, forgotPassword, newPassword, userActivationToggle }
+export { registerUser, loginUser, logoutUser, getCurrentUser, getAllUsers, changeCurrentPassword, forgotPassword, newPassword, userActivationToggle, renderProfilePage }
