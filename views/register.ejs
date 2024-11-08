@@ -1,0 +1,50 @@
+<!-- forgot-password.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Axios CDN -->
+</head>
+<body>
+    <h1>Login</h1>
+
+    <form id="RegisterForm">
+        <input type="text" id="fullname" placeholder="Enter your fullname" required />
+        <input type="text" name="profile" id="profile" placeholder="Enter your profile">
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <input type="password" id="password" placeholder="Enter your password" required />
+        <button type="submit">Submit</button>
+    </form>
+    <p>Already have an account? <a href="/login">Register</a></p>
+
+    <script>
+        document.getElementById('RegisterForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const fullname = document.getElementById('fullname').value;
+            const profile = document.getElementById('profile').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Use Axios to send the API request
+            axios.post('/api/users/register', { email, password, fullname, profile })
+                .then(response => {
+                    if (response.status === 201) {
+                        alert('Success: ' + response.data.message);  // Example redirect
+                        window.location.href = '/login';
+                    }
+                })
+                .catch(error => {
+                    // Handle error if the response status is not 200 or if an error occurred
+                    if (error.response) {
+                        alert(error.response.data.message || 'An error occurred');
+                    } else {
+                        alert('An error occurred: ' + error.message);
+                    }
+                });
+        });
+    </script>
+</body>
+</html>

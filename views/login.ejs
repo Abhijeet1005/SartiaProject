@@ -1,0 +1,50 @@
+<!-- forgot-password.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Axios CDN -->
+</head>
+<body>
+    <h1>Login</h1>
+
+    <form id="LoginForm">
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <input type="password" id="password" placeholder="Enter your password" required />
+        <button type="submit">Submit</button>
+    </form>
+    <p>Don't have an account? <a href="/register">Register</a></p>
+    <p><a href="/forgot-password">Forgot password</a></p>
+
+    <script>
+        document.getElementById('LoginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Use Axios to send the API request
+            axios.post('/api/users/login', { email, password })
+                .then(response => {
+                    if (response.status === 200) {
+                        // On success, redirect to a success page or show a message
+                        console.log(response.data);
+                        alert('Success: ' + response.data.message);  // Example redirect
+                        console.log(response.data.data.user.role);
+                        window.location.href = '/profile';
+                    }
+                })
+                .catch(error => {
+                    // Handle error if the response status is not 200 or if an error occurred
+                    if (error.response) {
+                        alert(error.response.data.message || 'An error occurred');
+                    } else {
+                        alert('An error occurred: ' + error.message);
+                    }
+                });
+        });
+    </script>
+</body>
+</html>
