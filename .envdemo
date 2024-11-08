@@ -1,0 +1,9 @@
+MONGODB_URI = mongodb://localhost:27017
+ACCESS_TOKEN_SECRET = secret 
+JWT_SECRET = secret
+ACCESS_TOKEN_EXPIRY = 7d
+PORT = 3000
+
+GMAIL = xyz@gmail.com
+GMAIL_PASS = "abcd efgh ijkl mnop" #Get this from google account app passwords
+API_URL = http://localhost #make to sure to replace with you app's deployed url
